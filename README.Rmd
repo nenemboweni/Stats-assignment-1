@@ -21,3 +21,32 @@ anscombe
 with(anscombe, plot(x1, y1))
 abline(lm(y1 ~ x1, data = anscombe))
 ```
+
+```{r,data_import, echo=TRUE}
+library(readr)
+df<-data.frame(read.csv("analgesic.csv"))
+
+```
+
+```{r,data_summary, echo=TRUE}
+dim(df)
+colnames(df)
+head(df)
+tail(df)
+summary(df)
+```
+
+```{r, data_tidy, echo=TRUE}
+library(dplyr)
+library(tidyr)
+
+
+df_1 <- gather(df, key = Key, value = Value, Measurement_1, Measurement_2, Measurement_3, -ID) #changing data from wide to long format
+df_2 <- group_by(df_1) #Group data according to means across the measurements made on each individual
+df_2
+
+summarise(df_2, mean = mean(Value))
+
+
+```
+

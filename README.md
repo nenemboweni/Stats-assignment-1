@@ -64,3 +64,94 @@ I love Octocat. She’s the coolest cat in town.
     ## 11  5  5  5  8  5.68 4.74  5.73  6.89
 
 <img src="./figures/xy_plot-1.svg" style="display: block; margin: auto;" />
+
+    library(readr)
+    df<-data.frame(read.csv("analgesic.csv"))
+
+    dim(df)
+
+    ## [1] 40  5
+
+    colnames(df)
+
+    ## [1] "ID"            "Group"         "Measurement_1" "Measurement_2"
+    ## [5] "Measurement_3"
+
+    head(df)
+
+    ##   ID     Group Measurement_1 Measurement_2 Measurement_3
+    ## 1  1 Analgesic            26            26            21
+    ## 2  2 Analgesic            29            26            23
+    ## 3  3 Analgesic            24            28            22
+    ## 4  4 Analgesic            25            22            24
+    ## 5  5 Analgesic            24            28            23
+    ## 6  6 Analgesic            22            23            26
+
+    tail(df)
+
+    ##    ID   Group Measurement_1 Measurement_2 Measurement_3
+    ## 35 35 Placebo            17            21            15
+    ## 36 36 Placebo            19            17            15
+    ## 37 37 Placebo            14            19            13
+    ## 38 38 Placebo            17            19            13
+    ## 39 39 Placebo            11            20            18
+    ## 40 40 Placebo            15            18            12
+
+    summary(df)
+
+    ##        ID              Group    Measurement_1   Measurement_2 
+    ##  Min.   : 1.00   Analgesic:20   Min.   :10.00   Min.   : 8.0  
+    ##  1st Qu.:10.75   Placebo  :20   1st Qu.:17.00   1st Qu.:17.0  
+    ##  Median :20.50                  Median :20.00   Median :20.0  
+    ##  Mean   :20.50                  Mean   :20.12   Mean   :20.7  
+    ##  3rd Qu.:30.25                  3rd Qu.:24.00   3rd Qu.:25.0  
+    ##  Max.   :40.00                  Max.   :30.00   Max.   :32.0  
+    ##  Measurement_3  
+    ##  Min.   :12.00  
+    ##  1st Qu.:16.00  
+    ##  Median :20.50  
+    ##  Mean   :20.52  
+    ##  3rd Qu.:24.25  
+    ##  Max.   :30.00
+
+    library(dplyr)
+
+    ## 
+    ## Attaching package: 'dplyr'
+
+    ## The following objects are masked from 'package:stats':
+    ## 
+    ##     filter, lag
+
+    ## The following objects are masked from 'package:base':
+    ## 
+    ##     intersect, setdiff, setequal, union
+
+    library(tidyr)
+
+
+    df_1 <- gather(df, key = Key, value = Value, Measurement_1, Measurement_2, Measurement_3, -ID) #changing data from wide to long format
+    df_2 <- group_by(df_1) #Group data according to means across the measurements made on each individual
+    df_2
+
+    ## # A tibble: 120 × 4
+    ##       ID     Group           Key Value
+    ##    <int>    <fctr>         <chr> <int>
+    ## 1      1 Analgesic Measurement_1    26
+    ## 2      2 Analgesic Measurement_1    29
+    ## 3      3 Analgesic Measurement_1    24
+    ## 4      4 Analgesic Measurement_1    25
+    ## 5      5 Analgesic Measurement_1    24
+    ## 6      6 Analgesic Measurement_1    22
+    ## 7      7 Analgesic Measurement_1    25
+    ## 8      8 Analgesic Measurement_1    28
+    ## 9      9 Analgesic Measurement_1    22
+    ## 10    10 Analgesic Measurement_1    18
+    ## # ... with 110 more rows
+
+    summarise(df_2, mean = mean(Value))
+
+    ## # A tibble: 1 × 1
+    ##    mean
+    ##   <dbl>
+    ## 1 20.45
